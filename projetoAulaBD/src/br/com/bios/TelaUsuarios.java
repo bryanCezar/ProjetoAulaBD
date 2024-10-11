@@ -6,6 +6,8 @@
 package br.com.bios;
 
 import br.com.DAO.ConexaoDAO;
+import br.com.DAO.UsuarioDAO;
+import br.com.DTO.UsuarioDTO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,45 +26,27 @@ public class TelaUsuarios extends javax.swing.JFrame {
     Connection conexao = null;
     PreparedStatement pst = null;
     ResultSet rs = null;
-    
+
     public TelaUsuarios() {
         initComponents();
         conexao = ConexaoDAO.connector();
-        
-         ImageIcon search = new ImageIcon("src/img/pesquisar.png");
-         ImageIcon clear = new ImageIcon("src/img/limpar.png");
-         
-         btnPesquisar.setIcon(search);
-         btnLimpar.setIcon(clear);
+
+        ImageIcon search = new ImageIcon("src/img/pesquisar.png");
+        ImageIcon clear = new ImageIcon("src/img/limpar.png");
+
+        btnPesquisar.setIcon(search);
+        btnLimpar.setIcon(clear);
     }
-    
-    public void pesquisar(){
-        String sql = "select * from tb_usuarios where id = ?";
-        try{
-            pst = conexao.prepareStatement(sql);
-            pst.setString(1, txtIdUsuario.getText());
-            rs = pst.executeQuery();
-            
-            if(rs.next()){
-                txtNomeUsuario.setText(rs.getString(1));
-                txtSenha.setText(rs.getString(2));
-                txtLogin.setText(rs.getString(3));
-            }else{
-                txtNomeUsuario.setText(null);
-                JOptionPane.showMessageDialog(null, "Usuário não cadastrado!");
-            }
-            
-        } catch(Exception e) {
-            JOptionPane.showMessageDialog(null,"Método Pesquisar" + e);
-        }
+
+   
+
+    public void limpar() {
+        txtIdUsuario.setText(null);
+        txtNomeUsuario.setText(null);
+        txtSenha.setText(null);
+        txtLogin.setText(null);
+
     }
-        public void limpar(){
-             txtNomeUsuario.setText(null);
-             txtSenha.setText(null);
-             txtLogin.setText(null);
-                
-        }
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -83,6 +67,9 @@ public class TelaUsuarios extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         txtLogin = new javax.swing.JTextField();
         btnLimpar = new javax.swing.JButton();
+        btnInserir = new javax.swing.JButton();
+        btnDeletar = new javax.swing.JButton();
+        btnEditar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Tela Usuários");
@@ -114,9 +101,36 @@ public class TelaUsuarios extends javax.swing.JFrame {
 
         jLabel4.setText("Login");
 
+        txtLogin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtLoginActionPerformed(evt);
+            }
+        });
+
         btnLimpar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnLimparActionPerformed(evt);
+            }
+        });
+
+        btnInserir.setText("Inserir");
+        btnInserir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnInserirActionPerformed(evt);
+            }
+        });
+
+        btnDeletar.setText("Deletar");
+        btnDeletar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeletarActionPerformed(evt);
+            }
+        });
+
+        btnEditar.setText("Editar");
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
             }
         });
 
@@ -125,31 +139,40 @@ public class TelaUsuarios extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(55, 55, 55)
+                        .addComponent(btnPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(65, 65, 65)
+                        .addComponent(btnLimpar))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtIdUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtNomeUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtSenha, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(72, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(62, 62, 62)
-                .addComponent(btnPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnLimpar)
-                .addGap(98, 98, 98))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtIdUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtNomeUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(0, 62, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel3)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(txtSenha, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel4)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(txtLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(btnDeletar)
+                                    .addComponent(btnInserir)
+                                    .addComponent(btnEditar))))))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -165,16 +188,20 @@ public class TelaUsuarios extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(txtSenha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtSenha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnInserir))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(txtLogin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtLogin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnDeletar))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnLimpar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnPesquisar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(62, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(btnLimpar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnPesquisar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnEditar))
+                .addContainerGap(42, Short.MAX_VALUE))
         );
 
         pack();
@@ -186,8 +213,21 @@ public class TelaUsuarios extends javax.swing.JFrame {
     }//GEN-LAST:event_txtIdUsuarioActionPerformed
 
     private void btnPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPesquisarActionPerformed
-        // TODO add your handling code here:
-        pesquisar();
+        UsuarioDTO dto= new UsuarioDTO();
+        
+        int idUsu= Integer.parseInt(txtIdUsuario.getText());
+        String nomeUsu= txtNomeUsuario.getText();
+        String logUsu= txtLogin.getText();
+        String senhaUsu= txtSenha.getText();
+        
+        dto.setIdUsuario(idUsu);
+        dto.setLoginUsuario(logUsu);
+        dto.setSenhaUsuario(senhaUsu);
+        dto.setNomeUsuario(nomeUsu);
+        
+        
+        UsuarioDAO dao = new UsuarioDAO();
+        dao.pesquisar(dto);
     }//GEN-LAST:event_btnPesquisarActionPerformed
 
     private void txtNomeUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNomeUsuarioActionPerformed
@@ -196,9 +236,94 @@ public class TelaUsuarios extends javax.swing.JFrame {
 
     private void btnLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimparActionPerformed
         // TODO add your handling code here:
-        limpar();
+        UsuarioDAO dao = new UsuarioDAO();
+        dao.limpar();
     }//GEN-LAST:event_btnLimparActionPerformed
 
+    private void btnInserirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInserirActionPerformed
+        // TODO add your handling code here:
+        int idUsuario = Integer.parseInt(txtIdUsuario.getText());
+        String nomeUsuario = txtNomeUsuario.getText();
+        String loginUsuario = txtLogin.getText();
+        String senhaUsuario = txtSenha.getText();
+
+        UsuarioDTO objUsuarioDTO = new UsuarioDTO();
+        
+        if(txtIdUsuario.getText().isEmpty()){
+            JOptionPane.showMessageDialog(null, "Campo de Id vazio");
+        }else if(txtNomeUsuario.getText().isEmpty()){
+            JOptionPane.showMessageDialog(null, "Campo de Nome vazio");
+        }else if(txtLogin.getText().isEmpty()){
+            JOptionPane.showMessageDialog(null, "Campo de Login vazio");
+        }else if(txtSenha.getText().isEmpty()){
+            JOptionPane.showMessageDialog(null, "Campo de Senha vazio");
+        } else {
+        
+        objUsuarioDTO.setIdUsuario(idUsuario);
+        objUsuarioDTO.setNomeUsuario(nomeUsuario);
+        objUsuarioDTO.setLoginUsuario(loginUsuario);
+        objUsuarioDTO.setSenhaUsuario(senhaUsuario);
+
+        UsuarioDAO objUsuarioDAO = new UsuarioDAO();
+        objUsuarioDAO.inserirUsuario(objUsuarioDTO);
+
+        txtNomeUsuario.setText(null);                   
+        txtSenha.setText(null);
+        txtLogin.setText(null);
+
+    }//GEN-LAST:event_btnInserirActionPerformed
+    }
+    private void btnDeletarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeletarActionPerformed
+        // TODO add your handling code here:
+       int idUsu = Integer.parseInt(txtIdUsuario.getText());
+       
+       UsuarioDTO usuarioDTO = new UsuarioDTO();
+       
+       usuarioDTO.setIdUsuario(idUsu);
+       
+       UsuarioDAO dao = new UsuarioDAO();
+       dao.apagar(usuarioDTO);
+       dao.limpar();
+       
+    }//GEN-LAST:event_btnDeletarActionPerformed
+
+    private void txtLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtLoginActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtLoginActionPerformed
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+int idUsuario = Integer.parseInt(txtIdUsuario.getText());
+        String nomeUsuario = txtNomeUsuario.getText();
+        String loginUsuario = txtLogin.getText();
+        String senhaUsuario = txtSenha.getText();
+
+        UsuarioDTO objUsuarioDTO = new UsuarioDTO();
+        
+        if(txtIdUsuario.getText().isEmpty()){
+            JOptionPane.showMessageDialog(null, "Campo de Id vazio");
+        }else if(txtNomeUsuario.getText().isEmpty()){
+            JOptionPane.showMessageDialog(null, "Campo de Nome vazio");
+        }else if(txtLogin.getText().isEmpty()){
+            JOptionPane.showMessageDialog(null, "Campo de Login vazio");
+        }else if(txtSenha.getText().isEmpty()){
+            JOptionPane.showMessageDialog(null, "Campo de Senha vazio");
+        } else {
+        
+        objUsuarioDTO.setIdUsuario(idUsuario);
+        objUsuarioDTO.setNomeUsuario(nomeUsuario);
+        objUsuarioDTO.setLoginUsuario(loginUsuario);
+        objUsuarioDTO.setSenhaUsuario(senhaUsuario);
+
+        UsuarioDAO objUsuarioDAO = new UsuarioDAO();
+        objUsuarioDAO.editar(objUsuarioDTO);
+
+        txtNomeUsuario.setText(null);                   
+        txtSenha.setText(null);
+        txtLogin.setText(null);
+        
+
+    }//GEN-LAST:event_btnEditarActionPerformed
+    }
     /**
      * @param args the command line arguments
      */
@@ -235,15 +360,18 @@ public class TelaUsuarios extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnDeletar;
+    private javax.swing.JButton btnEditar;
+    private javax.swing.JButton btnInserir;
     private javax.swing.JButton btnLimpar;
     private javax.swing.JButton btnPesquisar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JTextField txtIdUsuario;
-    private javax.swing.JTextField txtLogin;
-    private javax.swing.JTextField txtNomeUsuario;
-    private javax.swing.JTextField txtSenha;
+    public static javax.swing.JTextField txtIdUsuario;
+    public static javax.swing.JTextField txtLogin;
+    public static javax.swing.JTextField txtNomeUsuario;
+    public static javax.swing.JTextField txtSenha;
     // End of variables declaration//GEN-END:variables
 }

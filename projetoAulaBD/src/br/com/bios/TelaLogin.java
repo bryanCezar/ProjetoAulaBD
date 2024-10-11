@@ -7,6 +7,8 @@ package br.com.bios;
 
 import java.sql.*;
 import br.com.DAO.ConexaoDAO;
+import br.com.DAO.UsuarioDAO;
+import br.com.DTO.UsuarioDTO;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
@@ -20,28 +22,6 @@ public class TelaLogin extends javax.swing.JFrame {
     PreparedStatement pst = null;
     ResultSet rs = null;
     
-    public void logar(){
-       String sql = "select * from tb_usuarios where usuario = ? and senha = ?";
-       try{
-           // preparar a consulta no banco, em função ao que foi inserido nas caixas de texto
-           pst = conexao.prepareStatement(sql);
-           pst.setString(1, txtUsuario.getText());
-           pst.setString(2, txtSenha.getText());
-           
-           //executa a query
-           rs = pst.executeQuery();
-           //verifica se existe usuario
-           if(rs.next()){
-               this.dispose();
-               TelaPrincipal principal = new TelaPrincipal();
-               principal.setVisible(true);
-           }else{
-               JOptionPane.showMessageDialog(null, "Usuário e/ou senha invalidos");
-           }
-       } catch (Exception e) {
-           JOptionPane.showMessageDialog(null, "Tela Login" + e);
-       }
-    }
     
     
             
@@ -120,7 +100,7 @@ public class TelaLogin extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnLogin)
                         .addGap(42, 42, 42)))
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addContainerGap(29, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -153,7 +133,16 @@ public class TelaLogin extends javax.swing.JFrame {
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
         // TODO add your handling code here:
-        logar();
+        UsuarioDAO dao = new UsuarioDAO();
+        UsuarioDTO objUsuarioDTO = new UsuarioDTO();
+        
+        String usuario = txtUsuario.getText();
+        String senha = txtSenha.getText();
+        
+        objUsuarioDTO.setNomeUsuario(usuario);
+        objUsuarioDTO.setSenhaUsuario(senha);
+        
+        dao.logar(objUsuarioDTO);
     }//GEN-LAST:event_btnLoginActionPerformed
 
     /**

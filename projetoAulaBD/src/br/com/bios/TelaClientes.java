@@ -5,7 +5,9 @@
  */
 package br.com.bios;
 
+import br.com.DAO.ClientesDAO;
 import br.com.DAO.ConexaoDAO;
+import br.com.DTO.ClientesDTO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,40 +23,7 @@ public class TelaClientes extends javax.swing.JFrame {
     /**
      * Creates new form TelaClientes
      */
-    public void pesquisar(){
-        String sql = "select * from tb_clientes where id = ?";
-        try{
-            pst = conexao.prepareStatement(sql);
-            pst.setString(1, txtId.getText());
-            rs = pst.executeQuery();
-            
-            if(rs.next()){
-                txtNome.setText(rs.getString(2));
-                txtEndereco.setText(rs.getString(3));
-                txtTelefone.setText(rs.getString(4));
-                txtEmail.setText(rs.getString(5));
-                txtCpf.setText(rs.getString(6));
-            }else{
-                txtId.setText(null);
-                 txtNome.setText(null);
-                txtEndereco.setText(null);
-                txtTelefone.setText(null);
-                txtEmail.setText(null);
-                txtCpf.setText(null);
-                JOptionPane.showMessageDialog(null, "Usuário não cadastrado!");
-            }
-            
-        } catch(Exception e) {
-            JOptionPane.showMessageDialog(null,"Método Pesquisar" + e);
-        }
-    }
-        public void limpar(){
-             txtNome.setText(null);
-             txtEndereco.setText(null);
-             txtTelefone.setText(null);
-             txtEmail.setText(null);
-             txtCpf.setText(null);
-        }
+  
     
     Connection conexao = null;
     PreparedStatement pst = null;
@@ -170,16 +139,16 @@ public class TelaClientes extends javax.swing.JFrame {
                             .addComponent(jLabel11))
                         .addGap(24, 24, 24)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnPesquisar)
-                        .addGap(117, 117, 117)
-                        .addComponent(btnLimpar))
                     .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtTelefone, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtEndereco, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtCpf, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnPesquisar)
+                        .addGap(117, 117, 117)
+                        .addComponent(btnLimpar)))
                 .addContainerGap(144, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -195,10 +164,11 @@ public class TelaClientes extends javax.swing.JFrame {
                     .addComponent(jLabel5)
                     .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(9, 9, 9)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txtEndereco, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel3)
+                        .addComponent(jLabel6)))
                 .addGap(5, 5, 5)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
@@ -213,11 +183,11 @@ public class TelaClientes extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtCpf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel11))
-                .addGap(34, 34, 34)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnPesquisar)
                     .addComponent(btnLimpar))
-                .addContainerGap(33, Short.MAX_VALUE))
+                .addContainerGap(49, Short.MAX_VALUE))
         );
 
         pack();
@@ -229,12 +199,28 @@ public class TelaClientes extends javax.swing.JFrame {
 
     private void btnPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPesquisarActionPerformed
         // TODO add your handling code here:
-        pesquisar();
+          ClientesDTO dto = new ClientesDTO();
+        ClientesDAO dao = new ClientesDAO();
+        
+      int id = Integer.parseInt(txtId.getText());
+      String nome = txtNome.getText();
+      String endereco = txtEndereco.getText();
+      String telefone = txtTelefone.getText();
+      String email = txtEmail.getText();
+      String cpf = txtCpf.getText();
+      
+      dto.setId(id);
+     
+      
+      dao.pesquisar(dto);
+        
     }//GEN-LAST:event_btnPesquisarActionPerformed
 
     private void btnLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimparActionPerformed
         // TODO add your handling code here:
-        limpar();
+          ClientesDAO dao = new ClientesDAO();
+          dao.limpar();
+      
     }//GEN-LAST:event_btnLimparActionPerformed
 
     /**
@@ -286,11 +272,11 @@ public class TelaClientes extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JTextField txtCpf;
-    private javax.swing.JTextField txtEmail;
-    private javax.swing.JTextField txtEndereco;
-    private javax.swing.JTextField txtId;
-    private javax.swing.JTextField txtNome;
-    private javax.swing.JTextField txtTelefone;
+    public static javax.swing.JTextField txtCpf;
+    public static javax.swing.JTextField txtEmail;
+    public static javax.swing.JTextField txtEndereco;
+    public static javax.swing.JTextField txtId;
+    public static javax.swing.JTextField txtNome;
+    public static javax.swing.JTextField txtTelefone;
     // End of variables declaration//GEN-END:variables
 }
